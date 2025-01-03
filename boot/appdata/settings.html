@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Settings App</title>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://jscolor.com/release/2.5/jscolor-2.5.2/jscolor.js"></script>
+	<meta name="nova-include" content="nova.css">
+	<meta name="nova-icon"
+		content="<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='40.8208' height='40.94891' viewBox='0,0,40.8208,40.94891'><g transform='translate(-219.51359,-159.63806)'><g data-paper-data='{&quot;isPaintingLayer&quot;:true}' fill-rule='nonzero' stroke-linecap='butt' stroke-linejoin='miter' stroke-miterlimit='10' stroke-dasharray='' stroke-dashoffset='0' style='mix-blend-mode: normal'><path d='M224.49728,191.97943c0,-6.51609 0,-20.12167 0,-23.80086c0,-1.79525 1.27743,-3.6813 3.28885,-3.6813c6.47459,0 20.55435,0 24.11403,0c1.56415,0 3.60258,1.44253 3.60258,3.6813c0,6.76316 0,20.4796 0,23.95744c0,1.53 -1.83996,3.36671 -3.60258,3.36671c-3.67444,0 -17.45008,0 -23.95744,0c-2.10186,0 -3.44544,-1.37709 -3.44544,-3.52329zM239.52997,189.92242c5.52285,0 10,-4.47715 10,-10c0,-5.52285 -4.47715,-10 -10,-10c-5.52285,0 -10,4.47715 -10,10c0,5.52285 4.47715,10 10,10z' fill='#ffffff' stroke='none' stroke-width='0'/><path d='M237.50865,199.43282c-4.60757,-4.60757 -14.22817,-14.22817 -16.82975,-16.82975c-1.26943,-1.26943 -1.69979,-3.50635 -0.2775,-4.92864c4.57823,-4.57823 14.53412,-14.53412 17.05119,-17.05119c1.10602,-1.10602 3.56743,-1.52738 5.15048,0.05567c4.78228,4.78228 14.48126,14.48126 16.94047,16.94047c1.08187,1.08187 1.07958,3.68167 -0.16678,4.92803c-2.59822,2.59822 -12.33907,12.33907 -16.94047,16.94047c-1.48624,1.48624 -3.41004,1.46254 -4.92764,-0.05506zM239.52997,189.92242c5.52285,0 10,-4.47715 10,-10c0,-5.52285 -4.47715,-10 -10,-10c-5.52285,0 -10,4.47715 -10,10c0,5.52285 4.47715,10 10,10z' fill='#ffffff' stroke='none' stroke-width='0'/><path d='M235.7745,180.11252c0,-2.2917 1.85779,-4.14949 4.14949,-4.14949c2.2917,0 4.14949,1.85779 4.14949,4.14949c0,2.2917 -1.85779,4.14949 -4.14949,4.14949c-2.2917,0 -4.14949,-1.85779 -4.14949,-4.14949z' fill='none' stroke='#ffffff' stroke-width='2.5'/></g></g></svg>">
+
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		html {
+			height: 100%;
+			width: 100%;
+			scroll-behavior: smooth;
+		}
+
+		body {
+			height: 100%;
+			margin: 0px;
+			background: var(--colors-BG-normal);
+		}
+
+		.tab {
+			flex-grow: 2;
+			height: calc(100% - 10px);
+			overflow-y: auto;
+			max-width: 25vw;
+			min-width: 100px;
+			padding-bottom: 25vh;
+		}
+
+		.tab::after {
+			height: 10vh;
+			width: calc(100% - 10px);
+			background: linear-gradient(0deg, var(--colors-BG-normal), transparent);
+			content: "";
+			display: block;
+			position: absolute;
+			bottom: 10px;
+			z-index: 1;
+		}
+
+		.tab h3 {
+			padding-left: 5px;
+			margin: 5px 0px;
+			font-weight: normal;
+			font-size: var(--font-size-normal);
+		}
+
+		/* Style the buttons inside the tab */
+		.tab button.active {
+			background-color: var(--colors-BG-sub);
+			opacity: 1;
+		}
+
+		.tab button.active:hover {
+			background-color: var(--colors-BG-section);
+			opacity: 0.8;
+		}
+
+		.tab button {
+			color: inherit;
+			display: block;
+			border: 2px solid transparent;
+			background-color: transparent;
+			padding: 4px 7px;
+			width: calc(100% - 10px);
+			margin: 2px;
+			border-radius: var(--sizing-border-radius);
+			outline: none;
+			text-align: left;
+			cursor: pointer;
+			transition: 0.3s;
+			font-size: inherit;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			opacity: 0.7;
+			font-family: inherit;
+		}
+
+		/* Change background color of buttons on hover */
+		.tab button:hover {
+			background-color: var(--colors-BG-sub);
+		}
+
+		.tab button i {
+			font-size: 10px;
+			transform: translate(-6px, 0px) scale(1.5);
+			margin-left: 10px;
+		}
+
+		/* Style the tab content */
+		.tabcontent {
+			padding: 0px 12px;
+			width: 0;
+			flex-grow: 3;
+			min-width: 300px;
+			padding-bottom: 30vh;
+			background-color: inherit;
+			animation: drop .2s ease-out;
+			border-left: none;
+			border-radius: var(--sizing-border-radius);
+			height: calc(100% - 5px);
+			animation: tab .2s;
+			overflow-y: auto;
+			margin-left: 5px;
+		}
+
+		@keyframes tab {
+			0% {
+				opacity: 0.1;
+			}
+
+			100% {
+				opacity: 1;
+			}
+		}
+
+		container {
+			height: 100%;
+			display: flex;
+			padding: 5px;
+			flex-direction: row;
+			flex-wrap: nowrap;
+		}
+
+		td {
+			padding-bottom: var(--sizing-normal);
+			padding-top: var(--sizing-normal);
+			vertical-align: top;
+			padding-right: var(--sizing-huge);
+			border-bottom: 1px solid #262626;
+		}
+
+		td b,
+		ul li {
+			color: #b4d2ff;
+			background: var(--colors-BG-sub);
+			padding: 0.2rem 0.4rem;
+			border-radius: var(--sizing-nano);
+			cursor: pointer;
+		}
+
+		ul {
+			margin: 0;
+			padding: 0;
+		}
+
+		ul li {
+			margin-bottom: var(--sizing-normal);
+			width: fit-content;
+			list-style: none;
+		}
+
+		supportb {
+			border-radius: var(--sizing-normal);
+    background: radial-gradient(circle at 0% 0%, #3d8bff99, #ff57f763);
+    display: block;
+    padding: var(--sizing-huge);
+    margin-bottom: 0.5rem;
+		}
+
+		supportb b {
+			font-size: var(--font-size-subheading);
+			
+		}
+
+		supportb p {
+			margin-top: 7px;
+			margin-bottom: 0px;
+		}
+
+		supportb a {
+			display: inline-block;
+			border-radius: var(--sizing-border-radius);
+			background: #ffffff;
+			width: fit-content;
+			padding: var(--sizing-normal) var(--sizing-huge);
+			color: #1a4281;
+			text-decoration: none;
+			margin: 10px 0px;
+			margin-bottom: 0;
+			font-size: var(--font-size-normal);
+			transition: .3s;
+			cursor: pointer;
+		}
+
+		supportb a[okay] {
+			background: transparent;
+			color: white;
+			margin-left: 5px;
+		}
+
+		supportb a:hover {
+			box-shadow: 0 0 10px pink;
+		}
+
+		supportb a[okay]:hover {
+			background-color: #ffffff33;
+			box-shadow: none;
+		}
+
+		#battery #batperdisp {
+			font-size: 10vw;
+			display: inline-block;
+			width: fit-content;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		small {
+			display: block;
+			padding: var(--sizing-normal);
+			background: var(--colors-BG-sub);
+			border-radius: var(--sizing-border-radius);
+			opacity: 0.5;
+		}
+
+		small b {
+			margin-top: 5px;
+			display: block;
+			font-size: var(--font-size-small);
+		}
+
+		.checkbox-wrapper-51 input[type="checkbox"] {
+			visibility: hidden;
+			display: none;
+		}
+
+		.checkbox-wrapper-51 .toggle {
+			position: relative;
+			display: block;
+			width: 42px;
+			height: 24px;
+			cursor: pointer;
+			-webkit-tap-highlight-color: transparent;
+			transform: translate3d(0, 0, 0);
+		}
+
+		.checkbox-wrapper-51 .toggle:before {
+			content: "";
+			position: relative;
+			top: 1px;
+			left: 1px;
+			width: 40px;
+			height: 22px;
+			display: block;
+			background: #2a2a2a;
+			border-radius: 12px;
+			transition: background 0.2s ease;
+		}
+
+		.checkbox-wrapper-51 .toggle span {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 24px;
+			height: 24px;
+			display: block;
+			background: #6a6a6a;
+			border-radius: 50%;
+			transition: all 0.2s ease;
+		}
+
+		.checkbox-wrapper-51 .toggle span svg {
+			margin: 7px;
+			fill: none;
+		}
+
+		.checkbox-wrapper-51 .toggle span svg path {
+			stroke: #4c4c4c;
+			stroke-width: 2;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-dasharray: 24;
+			stroke-dashoffset: 0;
+			transition: all 0.5s linear;
+		}
+
+		.checkbox-wrapper-51 input[type="checkbox"]:checked+.toggle:before {
+			background: #9fff8c;
+			box-shadow: 0 2px var(--sizing-normal) #79e57947;
+		}
+
+		.checkbox-wrapper-51 input[type="checkbox"]:checked+.toggle span {
+			transform: translateX(18px);
+		}
+
+		.checkbox-wrapper-51 input[type="checkbox"]:checked+.toggle span path {
+			stroke: #52d66b;
+			stroke-dasharray: 25;
+			stroke-dashoffset: 25;
+		}
+
+		[settingn] {
+			background: var(--colors-BG-section);
+			padding: var(--sizing-normal);
+			margin: 0;
+		}
+
+		[setting] {
+			background: var(--colors-BG-section);
+			padding: var(--sizing-normal);
+			margin: 0;
+			border-bottom: 1px solid var(--colors-BG-sub);
+		}
+
+		[setting] b {
+			font-weight: 500;
+		}
+
+		@keyframes drop {
+			0% {
+				transform: translateY(10px);
+				opacity: 0;
+			}
+
+			100% {
+				opacity: 1;
+			}
+		}
+
+		[setting] .checkbox-wrapper-51 {
+			float: right;
+			transform: scale(0.7);
+		}
+
+		[setting] p {
+			width: 80%;
+			opacity: 0.5;
+			margin: 0;
+			font-size: var(--font-size-small);
+		}
+
+		#chargingIcon {
+			transform: translateY(2px) scale(0.8);
+			padding: 5px 1px 7px 1px;
+			background: #054305;
+			color: #4fb64f;
+			margin-left: 5px;
+			border-radius: var(--sizing-border-radius-normal);
+			display: inline-grid;
+		}
+
+		.nocss {
+			width: var(--font-size-big);
+			padding: 0;
+			display: inline;
+			outline: none;
+			font-size: var(--font-size-small);
+			color: white;
+			background: none;
+			margin: 0 3px;
+			text-align: center;
+			border: none;
+		}
+
+
+		.appli {
+			background-color: var(--colors-BG-section);
+			padding: 9px;
+			margin-bottom: 0;
+			border-radius: 0;
+			border-bottom: 1px solid #4d4d4d;
+		}
+
+		#appdi {
+			margin: 5px 0;
+			border-radius: var(--sizing-border-radius);
+			overflow: hidden;
+		}
+
+		.checkbox-wrapper-46 input[type="checkbox"] {
+			display: none;
+			visibility: hidden;
+		}
+
+		.checkbox-wrapper-46 .cbx {
+			margin: auto;
+			-webkit-user-select: none;
+			user-select: none;
+			cursor: pointer;
+		}
+
+		.checkbox-wrapper-46 .cbx span {
+			display: inline-block;
+			vertical-align: middle;
+			transform: translate3d(0, 0, 0);
+		}
+
+		.checkbox-wrapper-46 .cbx span:first-child {
+			position: relative;
+			width: 18px;
+			height: 18px;
+			border-radius: var(--sizing-border-radius);
+			transform: scale(1);
+			vertical-align: middle;
+			border: 1px solid #9098A9;
+			transition: all 0.2s ease;
+		}
+
+		.checkbox-wrapper-46 .cbx span:first-child svg {
+			position: absolute;
+			top: 3px;
+			left: 2px;
+			fill: none;
+			stroke: #FFFFFF;
+			stroke-width: 2;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-dasharray: 16px;
+			stroke-dashoffset: 16px;
+			transition: all 0.3s ease;
+			transition-delay: 0.1s;
+			transform: translate3d(0, 0, 0);
+		}
+
+		.checkbox-wrapper-46 .cbx span:first-child:before {
+			content: "";
+			width: 100%;
+			height: 100%;
+			background: #506EEC;
+			display: block;
+			transform: scale(0);
+			opacity: 1;
+			border-radius: 50%;
+		}
+
+		.checkbox-wrapper-46 .cbx span:last-child {
+			padding-left: 8px;
+		}
+
+		.checkbox-wrapper-46 .cbx:hover span:first-child {
+			border-color: #506EEC;
+		}
+
+		.checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child {
+			background: #506EEC;
+			border-color: #506EEC;
+			animation: wave-46 0.4s ease;
+		}
+
+		.checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child svg {
+			stroke-dashoffset: 0;
+		}
+
+		.checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child:before {
+			transform: scale(3.5);
+			opacity: 0;
+			transition: all 0.6s ease;
+		}
+
+		@keyframes wave-46 {
+			50% {
+				transform: scale(0.9);
+			}
+		}
+
+		.progbarma {
+			width: 100%;
+			background-color: var(--colors-BG-section);
+			height: 20px;
+			border-radius: var(--sizing-border-radius-full);
+			overflow: hidden;
+			margin: 10px 0px;
+		}
+
+		.appli:hover {
+			background-color: var(--colors-BG-sub);
+		}
+
+		.progbar {
+			width: 1%;
+			height: 30px;
+			min-width: 2px;
+			background-color: #04AA6D;
+		}
+
+		button {
+			border-radius: var(--sizing-border-radius);
+			border: none;
+			padding: 7px 15px;
+			background: var(--colors-BG-highlighted);
+			color: inherit;
+			font-size: inherit;
+			cursor: pointer;
+		}
+
+		[danger] {
+			background: #73414133;
+			color: #ff6262;
+			opacity: 1;
+			cursor: pointer;
+		}
+
+		.inpbox {
+			background: var(--colors-BG-section);
+			padding: var(--sizing-normal);
+			outline: none;
+			border-bottom: 1px solid var(--colors-BG-sub);
+		}
+
+		.inpbox select {
+			background: var(--colors-BG-sub);
+			color: inherit;
+			border: 1px solid var(--colors-BG-sub);
+			border-radius: var(--sizing-border-radius);
+			font-size: var(--font-size-normal);
+			padding: 3px 1px 3px 9px !important;
+			float: right;
+			outline: none;
+			transform: translate(3px, -2px);
+		}
+
+		@media only screen and (max-width: 400px) {
+			.tab button {
+				width: 35px;
+			}
+
+			.tab {
+				min-width: 49px;
+				flex-grow: 0;
+			}
+		}
+
+		@media only screen and (max-width: 100px) {
+			.tab button i {
+				margin-bottom: 8px;
+				display: block;
+			}
+		}
+
+		h1 {
+			font-weight: normal;
+			font-size: var(--font-size-normal);
+			margin-top: var(--sizing-huge);
+		}
+
+		segr {
+			margin-bottom: var(--sizing-normal);
+			overflow: hidden;
+			border-radius: var(--sizing-border-radius);
+			display: block;
+			border: 1px solid var(--colors-BG-sub);
+			box-shadow: 0 3px 5px #0000007e;
+		}
+
+		buttongrp {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: var(--sizing-nano);
+		}
+	</style>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+	<container>
+		<div class="tab">
+
+			<button class="tablinks" onclick="openCity(event, 'storage')" id="defaultOpen"><i
+					class="material-icons">storage</i> Storage</button>
+			<button class="tablinks" onclick="openCity(event, 'battery')"><i class="material-icons">battery_full</i>
+				Battery</button>
+			<button class="tablinks" onclick="openCity(event, 'devices')"><i class="material-icons">devices</i>
+				Devices</button>
+			<button class="tablinks" onclick="openCity(event, 'activity'); taskmg()"><i class="material-icons">poll</i>
+				Activity</button>
+			<button class="tablinks" onclick="openCity(event, 'perform'); updateFPS()"><i
+					class="material-icons">speed</i>
+				Performance</button>
+			<button class="tablinks" onclick="openCity(event, 'password')"><i class="material-icons">person</i>
+				User</button>
+			<button class="tablinks" onclick="openCity(event, 'exp'); defs();"><i class="material-icons">monitor</i>
+				Display</button>
+			<button class="tablinks" onclick="openCity(event, 'lclstgsc'); lclstgsc();"><i
+					class="material-icons">manage_search</i>
+				Data Manager</button>
+			<button class="tablinks" onclick="openCity(event, 'defaults'); defs5(); defs2(); defs3()"><i
+					class="material-icons">settings</i> Preferances</button>
+			<button class="tablinks" onclick="openCity(event, 'defaultappsforfiles'); defs2(); defs3()"><i
+					class="material-icons">open_in_browser</i> Defaults</button>
+			<button class="tablinks" onclick="openCity(event, 'about')"><i class="material-icons">info</i>
+				About</button>
+
+		</div>
+
+		<div id="lclstgsc" class="tabcontent">
+			<style>
+				.datamangernav {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 0.1rem var(--sizing-normal);
+					background: var(--colors-BG-section);
+					border-radius: var(--sizing-normal);
+				}
+
+				.datamangernav i {
+
+					font-size: var(--font-size-normal) !important;
+					transform: translateY(3px);
+				}
+
+				.lclstr {
+					border-bottom: 2px solid var(--colors-BG-sub);
+					padding: 0.2rem var(--sizing-normal);
+					margin-top: 0.2rem;
+					display: flex;
+					flex-direction: row;
+					flex-wrap: nowrap;
+				}
+
+				.lclstr:hover {
+					background: #1f1f1f69;
+					transition: 0.3s;
+				}
+
+				.lclstr span {
+					width: 0;
+					word-break: break-all;
+				}
+
+				.lclstr .name {
+					flex: 1;
+					margin-right: 0.2rem;
+				}
+
+				.lclstr .value {
+					flex: 3;
+				}
+
+				.lclstr .material-icons {
+					width: 20px;
+					font-size: var(--sizing-huge);
+					display: grid;
+					justify-items: center;
+					align-items: center;
+					opacity: 0.5;
+				}
+			</style>
+			<h1>Data Manager</h1>
+			<div class="datamangernav">
+				<span>LocalStorage</span>
+				<a onclick="lclstgsc()"><i class="material-icons">restart_alt</i></a>
+			</div>
+			<div id="datalist">
+
+			</div>
+			<script>
+				async function lclstgsc() {
+					document.getElementById("datalist").innerHTML = "";
+					let items = {};
+					for (let i = 0; i < localStorage.length; i++) {
+						let key = localStorage.key(i);
+						if (key == "magicString") {
+							continue;
+						}
+						items[key] = localStorage.getItem(key);
+						const elem = document.createElement("div");
+						elem.classList = "lclstr";
+						const elemname = document.createElement("span");
+						elemname.classList = "name";
+						elemname.innerHTML = key;
+						elem.appendChild(elemname);
+						const elemval = document.createElement("span");
+						elemval.classList = "value";
+						elemval.innerHTML = items[key];
+						elemval.addEventListener('click', async function () {
+							let x = await window.parent.ask("Set value for '" + key + "':", items[key]);
+							localStorage.setItem(key, x)
+						});
+						elem.appendChild(elemval);
+						const delbtn = document.createElement("span");
+						delbtn.classList = "material-icons";
+						delbtn.innerHTML = "delete_forever";
+						delbtn.addEventListener('click', async function () {
+							localStorage.removeItem(key);
+							lclstgsc();
+						});
+						elem.appendChild(delbtn);
+						document.getElementById("datalist").appendChild(elem)
+					}
+				}
+			</script>
+		</div>
+
+		<div id="perform" class="tabcontent">
+			<style>
+				#fpsCanvas {
+					width: 100%;
+					max-height: 100px;
+					background: #141414;
+					border-radius: var(--sizing-normal);
+				}
+
+				.bigtext {
+					font-size: 10vw;
+					display: inline-block;
+					width: fit-content;
+					margin: 0;
+				}
+
+				#fpsprof::after {
+					content: 'FPS';
+					padding: 7px 10px;
+					font-size: var(--font-size-normal);
+					border-radius: var(--sizing-border-radius-full);
+					background-color: #384a57;
+					display: inline-block;
+					border: 1px solid #55879d;
+					margin-left: 10px;
+					transform: translate(5px, -24px);
+				}
+			</style>
+			<h1>Your FPS:</h1>
+			<h1 id="fpsprof" class="bigtext">0</h1>
+			<br>
+			<canvas id="fpsCanvas" width="400" height="200"></canvas>
+			<small>
+				<h3>What is FPS?</h3>
+				<p>Frames Per Second (FPS) is a measure of how many times your device updates the display per second.
+					This value is closely tied to both the processing power of the system and the demands of the
+					software running on it. Extra information: Hz is LIKE FPS, 120Hz is fast and 60Hz is a bit slow.</p>
+			</small>
+
+			<script>
+				var running, currentpage;
+
+				function updateFPS() {
+					var canvas = document.getElementById('fpsCanvas');
+					var ctx = canvas.getContext('2d');
+
+					var startTime = Date.now();
+					var frameCount = 0;
+					var fpsValues = [];
+
+					function calculateFPS() {
+						var elapsedTime = Date.now() - startTime;
+						var fps = Math.round((frameCount * 1000) / elapsedTime);
+						fpsValues.push(fps);
+
+						// Clear canvas
+						ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+						// Get the last 30 frames, or all frames if there are less than 30
+						var numFrames = 30;
+						var fpsSubset = fpsValues.slice(-numFrames);
+
+						var stepX = canvas.width / fpsSubset.length;
+						var maxY = Math.max(...fpsSubset);
+						var stepY = canvas.height / (maxY + 10); // Add 10 for padding
+
+						// Start drawing the FPS graph
+						ctx.beginPath();
+						var initialX = 0;
+						var initialY = canvas.height - fpsSubset[0] * stepY;
+						ctx.moveTo(initialX, initialY);
+
+						fpsSubset.push(fpsSubset[fpsSubset.length - 1])
+
+						fpsSubset.forEach(function (fps, index) {
+							var x = index * stepX;
+							var y = canvas.height - fps * stepY;
+							ctx.lineTo(x, y);
+						});
+
+						// Connect the line graph to the bottom of the canvas
+						ctx.lineTo(canvas.width, canvas.height);
+						ctx.lineTo(0, canvas.height);
+
+						// Fill the area below the line graph with dark blue color
+						ctx.fillStyle = '#263238';
+						ctx.fill();
+
+						// Draw the line graph
+						ctx.strokeStyle = '#7986CB';
+						ctx.lineWidth = 2;
+						ctx.stroke();
+						document.getElementById('fpsprof').innerText = fps;
+
+						frameCount = 0;
+						startTime = Date.now();
+					}
+
+					function render() {
+						frameCount++;
+						requestAnimationFrame(render);
+					}
+
+					render();
+
+					// Define a variable to hold the interval ID
+					let intervalId = setInterval(function () {
+						if (currentpage === 'perform') {
+							calculateFPS();
+						} else {
+							clearInterval(intervalId); // This stops the interval
+						}
+					}, 500);
+
+				}
+			</script>
+		</div>
+
+		<div id="storage" class="tabcontent">
+			<h1>Storage</h1>
+			<segr>
+				<div settingn>
+					<b>IndexedDB</b><br>
+					<div class="progbarma" id="myProgress2">
+						<div id="myBar2" class="progbar"></div>
+					</div>
+					<small id="storemark2">Your system has crashed. Please Update.</small>
+				</div>
+				<div settingn id="storagesuggs">
+					<p style="margin-top: 0px;">Ran out of storage?<br>Get more storage by removing some files</p>
+					<button>Open Files</button>
+				</div>
+			</segr>
+			<segr>
+				<div settingn>
+					<p style="margin-top: 0px;">Be careful while interacting with extremely dangerous settings.</p>
+
+					<script>
+						async function erdbs() {
+							if (!confirm("Erase Device? \nThis will remove all data, including every user's files, folders, apps, permissions, cache and everything.\n\nWould you like to Clear your device?")) {
+								return;
+							}
+							window.parent.erdbsfull();
+						}
+						async function erdbsur() {
+							if (!confirm("Remove User? \nThis will remove your data, including your files, folders, apps, permissions, cache and everything.\n\nWould you like to Clear your account?")) {
+								return;
+							}
+							window.parent.removeUser();
+						}
+						function ercache() {
+							window.parent.appicns = {};
+							window.parent.memory = {};
+							window.parent.MemoryTimeCache = 4000;
+						}
+					</script>
+					<buttongrp>
+
+						<button danger onclick="erdbsur()">Remove User</button>
+						<button danger onclick="erdbs()">Erase Device</button>
+						<button danger onclick="ercache()">Reset cached</button>
+					</buttongrp>
+				</div>
+			</segr>
+			<segr>
+				<script>
+					async function updefapps() {
+						try {
+							document.getElementById("updefapplog").innerHTML = "Installing...";
+							await window.parent.installdefaultapps();
+							document.getElementById("updefapplog").innerHTML = "All Default apps updated. <b>Re-open Settings to reflect changes.</b>";
+						} catch (error) {
+							console.error("Error updating default apps:", error);
+						}
+					}
+
+				</script>
+				<div setting>
+					<b>Update Default Apps</b>
+					<button style="margin-top: 5px;float: right;" onclick="updefapps()">Update</button>
+					<p>Update or reinstall deleted or corrupted versions of default apps.</p>
+
+					<small id="updefapplog" style="margin-top: 5px;">Updating default apps frequently can assure newer
+						features and bug fixes.</small>
+				</div>
+			</segr>
+		</div>
+
+		<div id="defaults" class="tabcontent">
+			<h1>Preferances</h1>
+			<segr>
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-65" role="submit">
+						<label for="cbx-65" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Focus Mode</b>
+					<p>Blur the background image slowly while you use apps.
+					</p>
+				</div>
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-66" role="submit">
+						<label for="cbx-66" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Window Snapping</b>
+					<p>Drag a window to the sides of your screen to snap it in place.
+					</p>
+				</div>
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-70" role="submit">
+						<label for="cbx-70" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Use FlexOS offline</b>
+					<p>If enabled, FlexOS will try to cache the os and save it offline.
+					</p>
+				</div>
+
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-71" role="submit">
+						<label for="cbx-71" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Enable GPTV4</b>
+					<p>Enable GPTV4 AI.
+					</p>
+				</div>
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-69" role="submit">
+						<label for="cbx-69" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>SmartSearch</b>
+					<p>Search through your files based on similarity algorithms.
+					</p>
+				</div>
+				<div class="inpbox">
+					<span>Save Camera images as </span>
+					<select id="scapimas">
+						<option>PNG</option>
+						<option>JPEG</option>
+						<option>WEBP</option>
+					</select>
+				</div>
+				<small>Retain quality while compression using PNG.</small>
+				<script>
+					async function defs() {
+						// dark mode 
+						document.getElementById("cbx-67").addEventListener("change", async function () {
+							let newValue2 = document.getElementById("cbx-67").checked;
+							await window.parent.setSetting("darkMode", newValue2)
+							window.parent.checkdmode();
+						});
+
+						if (await window.parent.getSetting("darkMode")) {
+							document.getElementById("cbx-67").checked = true;
+						}
+
+						// simple mode 
+						document.getElementById("cbx-68").addEventListener("change", async function () {
+							let newValue2 = document.getElementById("cbx-68").checked;
+							await window.parent.setSetting("simpleMode", newValue2)
+							window.parent.checkdmode();
+						});
+
+						if (await window.parent.getSetting("simpleMode")) {
+							document.getElementById("cbx-68").checked = true;
+						}
+						let sizes2323 = {
+							"-1": 0.8,
+							0: 1,
+							1: 1.1,
+							2: 1.3
+						};
+
+						let storedUISizing = await window.parent.getSetting("UISizing");
+
+						let matchingKey = Object.keys(sizes2323).find(key => sizes2323[key] === storedUISizing);
+
+						if (matchingKey !== undefined) {
+							document.getElementById("UISIZErangeslid").value = matchingKey;
+						} else {
+							console.log("No UISizing set ", storedUISizing);
+						}
+
+						document.getElementById("UISIZErangeslid").addEventListener("input", async function () {
+							let newValue = sizes2323[document.getElementById("UISIZErangeslid").value];
+							await window.parent.setSetting("UISizing", newValue);
+							window.parent.checkdmode();
+						});
+
+
+						let storedwall = await window.parent.getSetting("wall");
+
+						if (storedwall) {
+							document.getElementById("wallpaperurl").value = storedwall;
+						} else {
+							console.log("No wallpaper set ", storedwall);
+						}
+					}
+
+					async function defs5() {
+						console.log("defs5 loaded");
+
+						// focus mode
+						document.getElementById("cbx-65").addEventListener("change", async function () {
+							let newValue2 = document.getElementById("cbx-65").checked;
+							await window.parent.setSetting("focusMode", newValue2);
+							window.parent.dewallblur()
+						});
+
+						try {
+							if (await window.parent.getSetting("focusMode")) {
+								document.getElementById("cbx-65").checked = true;
+							}
+						} catch (error) {
+							console.error(error)
+						}
+
+						// smartsearch
+						document.getElementById("cbx-69").addEventListener("change", async function () {
+							let newValue2 = document.getElementById("cbx-69").checked;
+							await window.parent.setSetting("smartsearch", newValue2)
+							window.parent.qsetsRefresh()
+						});
+
+						try {
+							if (await window.parent.getSetting("smartsearch")) {
+								document.getElementById("cbx-69").checked = true;
+							}
+						} catch (error) {
+							console.error(error)
+						}
+
+						// offline nova
+						document.getElementById("cbx-70").addEventListener("change", function () {
+							let newValue2 = document.getElementById("cbx-70").checked;
+							if (newValue2) {
+								window.parent.useNovaOffline();
+							} else {
+								window.parent.removeSWs()
+							}
+							window.parent.setSetting("novaOffline", newValue2)
+						});
+
+						try {
+							if (await window.parent.getSetting("novaOffline")) {
+								document.getElementById("cbx-70").checked = true;
+							}
+						} catch (error) {
+							console.error(error)
+						}
+
+						
+						// nova copilot
+						document.getElementById("cbx-71").addEventListener("change", function () {
+							let newValue2 = document.getElementById("cbx-71").checked;
+							window.parent.setSetting("copilot", newValue2)
+						});
+
+						try {
+							if (await window.parent.getSetting("copilot")) {
+								document.getElementById("cbx-71").checked = true;
+							}
+						} catch (error) {
+							console.error(error)
+						}
+
+						// window snapping
+						document.getElementById("cbx-66").addEventListener("change", function () {
+							let newValue2 = document.getElementById("cbx-66").checked;
+							window.parent.setSetting("wsnapping", newValue2)
+						});
+
+						try {
+							if (await window.parent.getSetting("wsnapping")) {
+								document.getElementById("cbx-66").checked = true;
+							}
+						} catch (error) {
+							console.error(error)
+						}
+
+						// save cam images as
+						let selinp;
+						selinp = document.getElementById("scapimas");
+						try {
+							if (await window.parent.getSetting("CamImgFormat")) {
+								selinp.value = await window.parent.getSetting("CamImgFormat");
+							}
+						} catch (error) {
+							console.error(error)
+						}
+						document.getElementById("scapimas").addEventListener("change", function () {
+							let newValue = document.getElementById("scapimas").value;
+							window.parent.setSetting("CamImgFormat", newValue)
+						});
+					}
+				</script>
+				<div class="inpbox">
+					<span>Default files app view mode </span>
+					<select id="defflvm">
+						<option>Grid</option>
+						<option>List</option>
+					</select>
+				</div>
+				<script>
+					async function defs2() {
+						let selinp;
+						selinp = document.getElementById("defflvm");
+						try {
+							if (await window.parent.getSetting("defflvm")) {
+								selinp.value = defflvm;
+							}
+						} catch (error) {
+							console.error(error)
+						}
+						document.getElementById("defflvm").addEventListener("change", function () {
+							let newValue = document.getElementById("defflvm").value;
+							window.parent.setSetting("defFileLayout", newValue)
+						});
+					}
+				</script>
+				<div class="inpbox">
+					<span>Time Format </span>
+					<select id="timefrmt">
+						<option>12 Hour</option>
+						<option>24 Hour</option>
+					</select>
+				</div>
+				<div class="inpbox">
+					<span>Default Search Engine </span>
+					<select id="defSearchEngine">
+						<option>NWP</option>
+						<option>Bing</option>
+					</select>
+				</div>
+				<script>
+					async function defs3() {
+						let selinp;
+						selinp = document.getElementById("timefrmt");
+						if (await window.parent.getSetting("timefrmt")) {
+							selinp.value = await window.parent.getSetting("timefrmt");
+						}
+						document.getElementById("timefrmt").addEventListener("change", function () {
+							let newValue = document.getElementById("timefrmt").value;
+							window.parent.setSetting("timefrmt", newValue);
+							window.parent.say("Reload NovaOS for the changes to take effect.");
+						});
+
+						let selinp2 = document.getElementById("defSearchEngine");
+						if (await window.parent.getSetting("defSearchEngine")) {
+							selinp2.value = await window.parent.getSetting("defSearchEngine");
+						}
+						document.getElementById("defSearchEngine").addEventListener("change", function () {
+							let newValue = document.getElementById("defSearchEngine").value;
+							window.parent.setSetting("defSearchEngine", newValue)
+						});
+					}
+				</script>
+			</segr>
+			<segr>
+				<div setting>
+					<b>Reset Settings</b>
+					<button style="margin-top: 5px;float: right;" onclick="restsettings();" danger>Reset</button>
+					<p>Reset to default settings.</p>
+					<script>
+						async function restsettings() {
+							try {
+								await window.parent.resetSettings();
+							} catch (error) {
+								console.error("Error updating default apps:", error);
+							}
+						}
+
+					</script>
+				</div>
+			</segr>
+		</div>
+
+		<div id="defaultappsforfiles" class="tabcontent">
+			<h1>Defaults</h1>
+			<style>
+				#appfileassos {
+					svg {
+						height: 1.5rem;
+						max-width: 1.5rem;
+						background: #57575733;
+						padding: 3px;
+						min-width: var(--sizing-normal);
+						border-radius: var(--sizing-nano);
+					}
+
+					.table {
+						display: flex;
+						flex-direction: column;
+						width: 100%;
+						border-radius: var(--sizing-normal);
+						overflow: hidden;
+					}
+
+					.header-row,
+					.row {
+						display: flex;
+						border-bottom: 1px solid #333333;
+						padding: 8px 0;
+					}
+
+					.header-row {
+						background-color: #252525;
+						font-weight: normal;
+						opacity: 0.7;
+						font-size: var(--font-size-small);
+					}
+
+					.cell {
+						padding: 8px;
+						display: flex;
+						align-items: center;
+						justify-content: flex-start;
+					}
+
+					.file-type-cell {
+						font-size: var(--font-size-normal);
+					}
+
+					.file-type-header,
+					.file-type-cell {
+						flex: 1;
+						border-right: 1px solid #353535;
+						padding-left: 16px;
+					}
+
+					.default-app-header,
+					.default-app-cell {
+						flex: 2;
+						padding-left: 16px;
+						display: flex;
+						flex-direction: column;
+						align-items: flex-start;
+					}
+
+					.row:last-child {
+						border-bottom: none;
+					}
+
+					.subapps {
+						svg {
+							height: 1.3rem;
+						}
+
+						.material-icons {
+							color: #7b7b7b;
+							font-size: var(--sizing-huge) !important;
+							transform: translateY(-2px);
+							margin-right: var(--sizing-normal);
+						}
+					}
+				}
+			</style>
+			<button onclick="rldfltyptable()" style="margin-bottom: var(--sizing-normal);">Reload Table</button>
+			<div id="appfileassos">
+
+			</div>
+			<script>
+			var currentreqID, replaceableapp, clickedRowId;
+
+async function rldfltyptable() {
+	const fileAssociations = window.parent.fileTypeAssociations;
+
+	async function createTable(fileAssociations) {
+		const table = document.createElement('div');
+		table.className = 'table';
+
+		const headerRow = document.createElement('div');
+		headerRow.className = 'header-row';
+
+		const fileTypeHeader = document.createElement('div');
+		fileTypeHeader.className = 'header-cell file-type-header';
+		fileTypeHeader.textContent = 'File Extension';
+
+		const defaultAppHeader = document.createElement('div');
+		defaultAppHeader.className = 'header-cell default-app-header';
+		defaultAppHeader.textContent = 'Apps';
+
+		headerRow.appendChild(fileTypeHeader);
+		headerRow.appendChild(defaultAppHeader);
+		table.appendChild(headerRow);
+
+		for (const [extension, apps] of Object.entries(fileAssociations)) {
+			const row = document.createElement('div');
+			row.className = 'row';
+			row.id = `row-${extension}`; // Unique ID based on the file extension
+
+			const fileTypeCell = document.createElement('div');
+			fileTypeCell.className = 'cell file-type-cell';
+			fileTypeCell.textContent = extension;
+
+			const defaultAppCell = document.createElement('div');
+			defaultAppCell.className = 'cell default-app-cell';
+			defaultAppCell.innerHTML = await window.parent.getAppIcon(0, apps[0], true);
+			defaultAppCell.onclick = () => {
+				replaceableapp = apps[0];
+				currentreqID = window.parent.genUID();
+				clickedRowId = row.id; // Store the clicked row's ID
+				let appIdToOpen = window.parent.fileTypeAssociations['file'][0] || null;
+				window.parent.openlaunchprotocol(appIdToOpen, { "opener": "app", "dir": "Apps/" }, currentreqID, myWindow.windowID);
+			};
+
+			row.appendChild(fileTypeCell);
+			row.appendChild(defaultAppCell);
+			table.appendChild(row);
+		}
+
+		return table;
+	}
+	const table = await createTable(fileAssociations);
+	document.getElementById('appfileassos').innerHTML = '';
+	document.getElementById('appfileassos').appendChild(table);
+}
+
+rldfltyptable();
+
+window.addEventListener('message', async (event) => {
+	const fileAssociations = window.parent.fileTypeAssociations;
+	if (event.data.action === 'loadlocalfile') {
+		if (event.data.id === myWindow.windowID) {
+			let targetAppId = replaceableapp;
+			let newAppId = event.data.returned;
+
+			for (let key in fileAssociations) {
+				if (fileAssociations.hasOwnProperty(key)) {
+					fileAssociations[key] = fileAssociations[key].map(appId => appId === targetAppId ? newAppId : appId);
+				}
+			}
+			await window.parent.setSetting('fileTypeAssociations', fileAssociations);
+
+			// Update the icon in only the clicked row
+			const row = document.getElementById(clickedRowId);
+			if (row) {
+				const defaultAppCell = row.querySelector('.default-app-cell');
+				defaultAppCell.innerHTML = await window.parent.getAppIcon(0, newAppId, true);
+			}
+		}
+	}
+});
+			</script>
+		</div>
+
+		<div id="password" class="tabcontent">
+			<h1>Password</h1>
+			<segr>
+				<style>
+					#password [setting] {
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						justify-content: space-between;
+					}
+				</style>
+				<div setting id="changpassthingy">
+					<b id="passstat"></b>
+					<button onclick="chstpass()">Continue</button>
+				</div>
+				<div setting>
+					<b id="userstatsi">Signed in as Admin</b>
+					<button onclick="window.parent.logoutofnova()">Sign Out</button>
+				</div>
+			</segr>
+			<script>
+				document.getElementById("userstatsi").innerHTML = 'Signed in as ' + window.parent.CurrentUsername;
+				if (window.parent.password == 'nova') {
+					document.getElementById("passstat").innerHTML = "Set a password for your device:";
+				} else {
+					document.getElementById("passstat").innerHTML = "Change your password";
+				}
+				async function chstpass() {
+					var setpass = '';
+					if (window.parent.password == 'nova') {
+						setpass = await window.parent.ask("Set a password: ", "")
+					} else {
+						setpass = await window.parent.ask("Choose an another password: ", window.parent.password);
+						if (setpass == window.parent.password) {
+							window.parent.say("That is your current password. Choose a different one.", "failed")
+							return;
+						}
+					}
+					if (await window.parent.justConfirm("Are you sure?", "All your data will be lost if you forget this password. Re-encrypt all your files with this one?")) {
+						await window.parent.changePassword(window.parent.password, setpass);
+						await window.parent.say("Click OK when you are ready to restart your OS.")
+						window.parent.location.reload()
+					} else {
+						return;
+					}
+				}
+			</script>
+
+		</div>
+
+		<div id="battery" class="tabcontent">
+			<h1>Battery</h1>
+			<h1 id="batperdisp">Here's lies battery %</h1>
+			<p id="batperrem"></p>
+			<small>Remarks may be innacurate or misleading.</small>
+			<script>
+				var batchar;
+				navigator.getBattery().then(function (battery) {
+					updateBatteryInfo(battery);
+
+					battery.addEventListener('chargingchange', function () {
+						updateBatteryInfo(battery);
+					});
+				});
+
+				function updateBatteryInfo(battery) {
+					batchar = battery.charging;
+					console.log(batchar)
+					var batteryPercentage = (battery.level * 100).toFixed(0);
+					document.getElementById("batperdisp").innerHTML = batteryPercentage + "%";
+
+					var batteryRemark = getBatteryRemark(batteryPercentage);
+					document.getElementById("batperrem").innerHTML = batteryRemark;
+
+					var chargingIcon = document.getElementById("chargingIcon");
+					if (batchar) {
+						document.getElementById("batperdisp").innerHTML += '<g id="chargingIcon"><i class="material-icons" >battery_charging_full</i></g>';
+					} else {
+					}
+				}
+
+				function getBatteryRemark(percentage) {
+					if (percentage == 0) {
+						if (batchar) {
+							return "Your device does not have a working battery."
+						} else {
+							return "Your battery feed is malfunctioning.";
+						}
+					} else if (percentage < 20) {
+						if (batchar) {
+							return "Your battery is still low, keep charging."
+						} else {
+							return "Your battery is running low. Please charge soon.";
+						}
+					} else if (percentage < 50) {
+						if (batchar) {
+							return "You have some battery left, But let it keep charging."
+						} else {
+							return "You have some battery left. Consider charging.";
+						}
+					} else if (percentage < 90) {
+						if (batchar) {
+							return "Your battery is in good condition. You may unplug your charger if needed."
+						} else {
+							return "Your battery is in good condition. No need to worry.";
+						}
+					} else if (batchar) {
+						return "Overcharging your device is not reccomended. You may unplug the charger now."
+					} else if (batchar && percentage == 100) {
+						return "Your device works without a battery. Remember to constantly save your files, you may lose progress otherwise."
+					} else {
+						return "Very high battery, keep it up.";
+					}
+				}</script>
+		</div>
+		<div id="about" class="tabcontent">
+			<h2 style="margin-bottom: 3px;">FlexOS <span style="font-weight: normal;">1</span></h2>
+			<p style="margin-top: 3px;">Version 1</p>
+			<p>V1_4<br>Thanks for using FlexOS.</p>
+			<supportb>
+				<b>Support NovaOS? (the credit)</b>
+				<p>Support us making NovaOS into a better and more powerful place for you. Starting from 1$.
+					<br>
+					<a onclick="window.open('https://www.patreon.com/adthoughtsglobal/shop')">Donate</a> 
+					<a okay onclick="window.open('https://www.patreon.com/adthoughtsglobal/membership')">Memberships</a>
+				</p>
+			</supportb>
+			<segr>
+			<div setting>
+				<b>NovaOS Discord</b>
+				<button style="margin-top: 5px;float: right;" onclick="window.open('https://discord.gg/atkqbwEQU8')">Join</button>
+				<p>Join us for support, exclusive news and much more.</p>
+			</div>
+			</segr>
+			<h3>Credits</h3>
+			<table>
+				<tbody style="width: 100%;">
+					<tr>
+						<td><b>You</b></td>
+						<td>Using FlexOS.</td>
+					</tr>
+					<tr>
+						<td><b onclick="openlink('https://github.com/Felix9390')">Lyrex</b></td>
+						<td>Developer</td>
+					</tr>
+							<ul>
+								<li onclick="openlink('https://fonts.google.com/')">Google Fonts</li>
+								<li>FFlate</li>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+			<small>
+				Credits to all those who we didn't mention here.
+			</small>
+			<br>
+		</div>
+		<div id="activity" class="tabcontent">
+			<h1>Activity</h1>
+			<style>
+				.task {
+					padding: 10px;
+					background: var(--colors-BG-sub);
+					border-radius: var(--sizing-border-radius);
+					margin: 5px 0;
+				}
+
+				.task .stpicn {
+					float: right;
+					transform: translateY(1px);
+					cursor: pointer;
+					padding: 2px;
+					background: var(--colors-BG-highlighted);
+					border-radius: 50%;
+					color: #ff7373;
+				}
+
+				.task small {
+					display: inline-block;
+					background-color: transparent;
+					opacity: 0.5;
+					margin: 0;
+					padding: 0;
+					padding-left: 5px;
+				}
+
+				@keyframes wooboo {
+					0% {
+						transform: scale(1);
+					}
+
+					50% {
+						transform: scale(1.1);
+						filter: brightness(120%);
+					}
+
+					100% {
+						transform: scale(1);
+					}
+				}
+
+				.wooboo-animation {
+					animation: wooboo .5s infinite;
+				}
+			</style>
+			<div id="taskslist">
+				<div class="task">
+					<span>Settings</span>
+					<span class="material-icons stpicn">
+						do_disturb
+					</span>
+				</div>
+			</div>
+			<script>
+				async function openlink(x) {
+					let okay = await window.parent.justConfirm("Are you sure?", "Open " + x + " outside of NovaOS?");
+					if (okay) {
+						window.open(x);
+					}
+				}
+				function taskmg() {
+					const winds = window.parent.winds;
+					const tasksList = document.getElementById("taskslist");
+					tasksList.innerHTML = "";
+
+					Object.keys(winds).forEach(key => {
+						const taskId = key.slice(-12);
+
+						const taskName = key.slice(0, -12);
+
+						const taskDiv = document.createElement("div");
+						taskDiv.classList.add("task");
+
+						const spanSettings = document.createElement("span");
+						spanSettings.textContent = taskName;
+
+						const smallId = document.createElement("small");
+						smallId.textContent = taskId;
+
+						const spanIcon = document.createElement("span");
+						spanIcon.classList.add("material-icons", "stpicn");
+						spanIcon.textContent = "do_disturb";
+						spanIcon.onclick = function () {
+							spanIcon.classList.add('wooboo-animation');
+							delete window.parent.winds[taskName + taskId];
+							window.parent.clwin("window" + taskId);
+
+						}
+
+						taskDiv.appendChild(spanSettings);
+						taskDiv.appendChild(smallId);
+
+						taskDiv.appendChild(spanIcon);
+
+						tasksList.appendChild(taskDiv);
+					});
+
+					// Call taskmg again after 3 seconds
+					setTimeout(taskmg, 5000);
+				}
+
+			</script>
+		</div>
+		<div id="devices" class="tabcontent">
+			<h1>Devices</h1>
+			<style>
+				.device {
+					padding: var(--sizing-normal);
+					background: var(--colors-BG-section);
+					border-radius: var(--sizing-border-radius);
+					margin: 5px 0;
+				}
+
+				.device .dic {
+					display: inline-grid;
+					width: 30px;
+					height: 30px;
+					justify-content: center;
+					align-items: center;
+					justify-items: center;
+				}
+
+				.device .ddts {
+					display: inline-block;
+					width: calc(100% - 35px);
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+
+				.device [boo] {
+					opacity: 0.7;
+					overflow: hidden;
+					text-wrap: nowrap;
+					width: calc(100% - 20px);
+					display: block;
+					text-overflow: ellipsis;
+				}
+
+				.device-type {
+					margin-right: 3px;
+					padding-right: 3px;
+					border-right: 1px solid grey;
+				}
+
+				.colorsetting {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+					align-items: center;
+				}
+			</style>
+			<div id="deviceslist">
+				<div class="device">
+					<div class="dic">
+						<span class="material-icons">
+							refresh
+						</span>
+					</div>
+					<div class="ddts">
+						<span>Reindex Devices</span>
+					</div>
+					<button onclick="generateDeviceDivs()">Refresh</button>
+				</div>
+			</div>
+			<script>
+				function generateDeviceDivs() {
+					const devicesListDiv = document.getElementById("deviceslist");
+
+					navigator.mediaDevices.enumerateDevices().then(devices => {
+						if (devices.length === 0) {
+							devicesListDiv.innerHTML = "<p>No media devices found.</p>";
+							return;
+						}
+
+						const uniqueDevices = {};
+
+						devices.forEach(device => {
+							const deviceId = device.deviceId;
+							if (uniqueDevices[device.label]) {
+								return;
+							}
+
+							const info = {
+								id: deviceId || 'N/A',
+							};
+
+							if (device.kind === 'audioinput' && devices.some(d => d.deviceId === deviceId && d.kind === 'audiooutput')) {
+								info.type = 'both';
+							} else if (device.kind === 'audioinput') {
+								info.type = 'microphone';
+							} else if (device.kind === 'audiooutput') {
+								info.type = 'speakers';
+							} else if (device.kind === 'videoinput') {
+								info.type = 'camera';
+							}
+
+							uniqueDevices[device.label] = info;
+						});
+
+						devicesListDiv.innerHTML = ""; // Clear previous content
+
+						Object.keys(uniqueDevices).forEach(deviceLabel => {
+							const deviceInfo = uniqueDevices[deviceLabel];
+
+							const deviceDiv = document.createElement("div");
+							deviceDiv.classList.add("device");
+
+							const powerDiv = document.createElement("div");
+							powerDiv.classList.add("dic");
+							const powerIcon = document.createElement("span");
+							powerIcon.classList.add("material-icons");
+							if (deviceInfo.type === 'microphone') {
+								powerIcon.textContent = "mic";
+							} else if (deviceInfo.type === 'camera') {
+								powerIcon.textContent = "videocam";
+							} else if (deviceInfo.type === 'speakers') {
+								powerIcon.textContent = "volume_up";
+							} else {
+								powerIcon.textContent = "power_settings_new";
+							}
+							powerDiv.appendChild(powerIcon);
+
+
+							const deviceTextDiv = document.createElement("div");
+							deviceTextDiv.classList.add("ddts");
+							const deviceNameSpan = document.createElement("span");
+							deviceNameSpan.textContent = deviceLabel;
+							deviceTextDiv.appendChild(deviceNameSpan);
+
+							const deviceIdSpan = document.createElement("span");
+							deviceIdSpan.textContent = deviceInfo.id;
+							deviceIdSpan.setAttribute("boo", true);
+
+							deviceDiv.appendChild(powerDiv);
+							deviceDiv.appendChild(deviceTextDiv);
+							deviceDiv.appendChild(deviceIdSpan);
+
+							devicesListDiv.appendChild(deviceDiv);
+						});
+					}).catch(err => {
+						devicesListDiv.innerHTML = "<p>Error enumerating devices: " + err + "</p>";
+					});
+				}
+			</script>
+		</div>
+
+		<div id="exp" class="tabcontent">
+			<h1>Display</h1>
+			<segr>
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-51" onclick="togglepsm()" role="submit">
+						<label for="cbx-51" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Power Saving Mode</b>
+					<p>Dim the lights by: <input class="nocss" type="number" min=10 max=80 value="50" id="dimlightsby">%
+						in this session.
+					</p>
+
+				</div>
+			</segr>
+			<segr>
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-67" role="submit">
+						<label for="cbx-67" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Dark Mode</b>
+					<p>When you're a pro.
+					</p>
+				</div>
+
+				<div setting>
+					<div class="checkbox-wrapper-51">
+						<input type="checkbox" id="cbx-68" role="submit">
+						<label for="cbx-68" class="toggle">
+							<span>
+								<svg width="10px" height="10px" viewBox="0 0 10 10">
+									<path
+										d="M5,1 L5,1 C2.790861,1 1,2.790861 1,5 L1,5 C1,7.209139 2.790861,9 5,9 L5,9 C7.209139,9 9,7.209139 9,5 L9,5 C9,2.790861 7.209139,1 5,1 L5,9 L5,1 Z">
+									</path>
+								</svg>
+							</span>
+						</label>
+					</div>
+					<b>Simple Mode</b>
+					<p>Turns off fancy design elements like blur and transparency (works along with themes)
+					</p>
+				</div>
+			</segr>
+			<segr>
+				<div setting>
+					<b>UI Size <label real="">BETA</label></b>
+					<div class="UISIZEcontainer">
+
+						<div class="UISIZEslider-labels">
+							<span>small</span>
+							<span>default</span>
+							<span>big</span>
+							<span>biggest</span>
+						</div>
+						<input type="range" id="UISIZErangeslid" min="-1" max="2" step="1" value="0">
+
+					</div>
+				</div>
+			</segr>
+			<h1>Colors <label real>BETA</label></h1> 
+			<button onclick="applyColorsFromImageURL()" style="margin-bottom: 1rem;">Adapt from image URL</button>
+
+			<canvas id="canvas" style="display:none;"></canvas>
+			<style>
+				label[real] {
+					font-size: var(--font-size-small);
+    background-color: rgb(139 62 62);
+    color: white;
+    border-radius: 5px;
+    padding: 3px 5px;
+    margin-left: 5px;
+				}
+				.jscolor {
+					width: 35px;
+					height: 35px;
+					border-radius: var(--sizing-border-radius);
+				}
+
+				/* Styles for the color picker itself */
+				.jscolor-palette {
+					background: #333;
+					border: 1px solid #555;
+				}
+
+				/* Styles for the color palette elements */
+				.jscolor-palette .jscolor-palette-cell {
+					border: 1px solid #444;
+				}
+
+				/* Styles for the color picker input */
+				.jscolor-picker {
+					background: #222;
+					color: #ddd;
+					border: 1px solid #444;
+				}
+
+				/* Adjust color of the text and input areas */
+				.jscolor-input {
+					background: #333;
+					color: #eee;
+				}
+
+				/* Additional adjustments for hover and focus states */
+				.jscolor-picker:hover,
+				.jscolor-picker:focus {
+					border-color: #777;
+				}
+
+				.jscolor-palette-cell:hover {
+					background: #444;
+				}
+			</style>
+			<segr>
+				<div setting class="colorsetting">
+					<b>Normal Background</b>
+					<button id="normal-bg"
+						data-jscolor="{preset:'dark', width:150, paletteCols:0, onInput:'updateColor(this, \"
+						--colors-BG-normal\")'}"></button>
+				</div>
+				<div setting class="colorsetting">
+					<b>Sub Background</b>
+					<button id="sub-bg"
+						data-jscolor="{preset:'dark', width:150, paletteCols:0, onInput:'updateColor(this, \"
+						--colors-BG-sub\")'}"></button>
+				</div>
+				<div setting class="colorsetting">
+					<b>Section Background</b>
+					<button id="section-bg"
+						data-jscolor="{preset:'dark', width:150, paletteCols:0, onInput:'updateColor(this, \"
+						--colors-BG-section\")'}"></button>
+				</div>
+				<div setting class="colorsetting">
+					<b>Highlighted Background</b>
+					<button id="high-bg"
+						data-jscolor="{preset:'dark', width:150, paletteCols:0, onInput:'updateColor(this, \"
+						--colors-BG-highlighted\")'}"></button>
+				</div>
+			</segr>
+			<segr>
+				<div setting class="colorsetting">
+					<b>Accent color</b>
+					<button id="accent-bg"
+						data-jscolor="{preset:'dark', width:150, paletteCols:0, onInput:'updateColor(this, \"
+						--colors-BG-accent\")'}"></button>
+				</div>
+				<div setting class="colorsetting">
+					<b>Text color</b>
+					<button id="text-normal"
+						data-jscolor="{preset:'dark', width:150, paletteCols:0, onInput:'updateColor(this, \"
+						--colors-text-normal\")'}"></button>
+				</div>
+
+			</segr>
+				<button id="save-btn">Save</button>
+			<script>
+				function updateColor(picker, variableName) {
+					const colorValue = picker.toHEXString();
+					window.parent.document.documentElement.style.setProperty(variableName, colorValue);
+				}
+
+				function getCSSVariableValue(varName) {
+					return window.parent.getComputedStyle(window.parent.document.documentElement).getPropertyValue(varName).trim();
+				}
+
+				// Convert HEX to HSL
+				function hexToHSL(hex) {
+					let r = parseInt(hex.substring(1, 3), 16) / 255;
+					let g = parseInt(hex.substring(3, 5), 16) / 255;
+					let b = parseInt(hex.substring(5, 7), 16) / 255;
+
+					let max = Math.max(r, g, b);
+					let min = Math.min(r, g, b);
+					let h, s, l = (max + min) / 2;
+
+					if (max === min) {
+						h = s = 0; // achromatic
+					} else {
+						let d = max - min;
+						s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+						switch (max) {
+							case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+							case g: h = (b - r) / d + 2; break;
+							case b: h = (r - g) / d + 4; break;
+						}
+						h /= 6;
+					}
+
+					return { h: h * 360, s: s * 100, l: l * 100 };
+				}
+
+				// Convert HSL to HEX
+				function hslToHex(h, s, l) {
+					s /= 100;
+					l /= 100;
+
+					let c = (1 - Math.abs(2 * l - 1)) * s;
+					let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+					let m = l - c / 2;
+					let r, g, b;
+
+					if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+					else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+					else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+					else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+					else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+					else { r = c; g = 0; b = x; }
+
+					return `#${((1 << 24) + (Math.round((r + m) * 255) << 16) + (Math.round((g + m) * 255) << 8) + Math.round((b + m) * 255)).toString(16).slice(1)}`;
+				}
+
+				// Adjust color brightness based on saturation
+				function adjustBrightness(hex, amount) {
+					let { h, s, l } = hexToHSL(hex);
+
+					if (s === 0) {
+						// Color is grayscale, adjust brightness
+						l = Math.min(100, Math.max(0, l + amount));
+					} else {
+						// Color is not grayscale, adjust lightness
+						l = Math.min(100, Math.max(0, l + (amount * 0.1)));
+					}
+
+					return hslToHex(h, s, l);
+				}
+
+				function initColorPickers() {
+					// normal bg
+					document.querySelector("#normal-bg").jscolor.fromString(getCSSVariableValue('--colors-BG-normal'));
+					// text normal
+					document.querySelector("#text-normal").jscolor.fromString(getCSSVariableValue('--colors-text-normal'));
+					// section bg
+					document.querySelector("#section-bg").jscolor.fromString(getCSSVariableValue('--colors-BG-section'));
+					// high bg
+					document.querySelector("#high-bg").jscolor.fromString(getCSSVariableValue('--colors-BG-highlighted'));
+					// accent bg
+					document.querySelector("#accent-bg").jscolor.fromString(getCSSVariableValue('--colors-BG-accent'));
+					// sub bg
+					document.querySelector("#sub-bg").jscolor.fromString(getCSSVariableValue('--colors-BG-sub'));
+				}
+
+				function saveColors() {
+					const normalBgColor = document.querySelector("#normal-bg").jscolor.toHEXString();
+					const highlightedBgColor = document.querySelector("#high-bg").jscolor.toHEXString();
+					const textNormalColor = document.querySelector("#text-normal").jscolor.toHEXString();
+
+					// Adjust the normalBgColor slightly for other background-related variables
+					const sectionBgColor = document.querySelector("#section-bg").jscolor.toHEXString();
+					const subBgColor = document.querySelector("#sub-bg").jscolor.toHEXString();
+
+					window.parent.document.documentElement.style.setProperty('--colors-BG-normal', normalBgColor);
+					window.parent.document.documentElement.style.setProperty('--colors-BG-section', sectionBgColor);
+					window.parent.document.documentElement.style.setProperty('--colors-BG-highlighted', highlightedBgColor);
+					window.parent.document.documentElement.style.setProperty('--colors-BG-accent', highlightedBgColor);
+					window.parent.document.documentElement.style.setProperty('--colors-BG-sub', subBgColor);
+					window.parent.document.documentElement.style.setProperty('--colors-text-normal', textNormalColor);
+				}
+
+				window.addEventListener('load', initColorPickers);
+				document.querySelector("#save-btn").addEventListener('click', saveColors);
+
+				async function applyColorsFromImageURL() {
+					let imageURL = await window.parent.ask("Enter image URL");
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const image = new Image();
+            
+            image.crossOrigin = 'Anonymous'; // This ensures the image can be processed if it's hosted on another domain
+
+            image.onload = () => {
+                canvas.width = image.width;
+                canvas.height = image.height;
+                ctx.drawImage(image, 0, 0, image.width, image.height);
+                const imgData = ctx.getImageData(0, 0, image.width, image.height);
+
+                const avgColor = getAverageColor(imgData);
+                const invertedColor = invertColor(avgColor);
+
+                // Apply the colors to CSS variables
+                document.documentElement.style.setProperty('--colors-BG-normal', colorToString(avgColor));
+                document.documentElement.style.setProperty('--colors-text-normal', colorToString(invertedColor));
+                document.documentElement.style.setProperty('--colors-BG-sub', colorToString(adjustBrightness(avgColor, -0.2)));
+                document.documentElement.style.setProperty('--colors-BG-section', colorToString(adjustBrightness(avgColor, -0.1)));
+                document.documentElement.style.setProperty('--colors-BG-highlighted', colorToString(adjustBrightness(avgColor, 0.2)));
+                document.documentElement.style.setProperty('--colors-BG-accent', colorToString(adjustBrightness(avgColor, 0.3)));
+                
+                // Apply colors to jscolor inputs
+                document.querySelector("#normal-bg").jscolor.fromString(colorToString(avgColor));
+                document.querySelector("#text-normal").jscolor.fromString(colorToString(invertedColor));
+                document.querySelector("#section-bg").jscolor.fromString(colorToString(adjustBrightness(avgColor, -0.1)));
+                document.querySelector("#high-bg").jscolor.fromString(colorToString(adjustBrightness(avgColor, 0.2)));
+                document.querySelector("#sub-bg").jscolor.fromString(colorToString(adjustBrightness(avgColor, -0.2)));
+            };
+
+            image.src = imageURL;
+        }
+
+        function getAverageColor(imgData) {
+            const data = imgData.data;
+            let r = 0, g = 0, b = 0;
+            const pixelCount = imgData.width * imgData.height;
+
+            for (let i = 0; i < data.length; i += 4) {
+                r += data[i];
+                g += data[i + 1];
+                b += data[i + 2];
+            }
+
+            r = Math.floor(r / pixelCount);
+            g = Math.floor(g / pixelCount);
+            b = Math.floor(b / pixelCount);
+
+            return { r, g, b };
+        }
+
+        function invertColor({ r, g, b }) {
+            return { r: 255 - r, g: 255 - g, b: 255 - b };
+        }
+
+        function adjustBrightness({ r, g, b }, factor) {
+            return {
+                r: Math.min(255, Math.max(0, Math.floor(r * (1 + factor)))),
+                g: Math.min(255, Math.max(0, Math.floor(g * (1 + factor)))),
+                b: Math.min(255, Math.max(0, Math.floor(b * (1 + factor))))
+            };
+        }
+
+        function colorToString({ r, g, b }) {
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+			</script>
+			<h1>Personalization</h1>
+			<segr>
+				<div class="inpbox">
+					<span>Wallpaper</span>
+					<div class="inputwithbtn">
+						<input placeholder="Paste a URL here..." id="wallpaperurl">
+						<button onclick="savewallpap()">Save</button>
+					</div>
+				</div>
+			</segr>
+			<style>
+				.inputwithbtn {
+					width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+				}
+
+				.inputwithbtn input {
+					background-color: var(--colors-BG-normal);
+					color: var(--colors-text-normal);
+					flex: 1;
+					border:none;
+					padding: var(--sizing-nano) var(--sizing-normal);
+					border-radius: var(--sizing-border-radius);
+					padding: var(--sizing-nano);
+				}
+
+				#UISIZErangeslid {
+					width: 79%;
+					height: 2px;
+					display: block;
+					margin: var(--sizing-normal) auto;
+					margin-top: var(--sizing-huge);
+				}
+
+				.UISIZEslider-labels {
+					display: flex;
+					justify-content: space-between;
+					width: 100%;
+					margin-top: var(--sizing-normal);
+				}
+
+				.UISIZEslider-labels span {
+					opacity: 0.5;
+					font-size: var(--font-size-small);
+					width: 0;
+					text-align: center;
+					flex: 1;
+				}
+			</style>
+			</segr>
+			<script defer>
+				async function savewallpap() {
+					var newurl = document.getElementById("wallpaperurl");
+					await window.parent.setSetting("wall", newurl.value);
+					window.parent.dod();
+				}
+				function openCity(evt, cityName) {
+					currentpage = cityName;
+					var i, tabcontent, tablinks;
+					tabcontent = document.getElementsByClassName("tabcontent");
+					for (i = 0; i < tabcontent.length; i++) {
+						tabcontent[i].style.display = "none";
+					}
+					tablinks = document.getElementsByClassName("tablinks");
+					for (i = 0; i < tablinks.length; i++) {
+						tablinks[i].className = tablinks[i].className.replace(" active", "");
+					}
+					document.getElementById(cityName).style.display = "block";
+					evt.currentTarget.className += " active";
+				}
+
+				var usedMemoryPercentage;
+				document.getElementById("defaultOpen").click();
+
+				if ('storage' in navigator && 'estimate' in navigator.storage) {
+					navigator.storage.estimate().then(({ usage, quota }) => {
+
+						const elem = document.getElementById("myBar2");
+						const storemarkElem = document.getElementById("storemark2");
+
+						// Calculate used memory percentage
+						const usedMemoryPercentage = (usage / quota) * 100;
+						elem.style.width = usedMemoryPercentage + "%";
+
+						// Convert total and used memory to GB and MB
+						const totalMemoryGB = (quota / (1024 * 1024 * 1024)).toFixed(2);
+						const usedMemoryGB = (usage / (1024 * 1024 * 1024)).toFixed(2);
+						const totalMemoryMB = (quota / (1024 * 1024)).toFixed(2);
+						const usedMemoryMB = (usage / (1024 * 1024)).toFixed(2);
+
+						// Display memory usage
+						storemarkElem.textContent = `Used ${usedMemoryGB} GB (${usedMemoryMB} MB) of available ${totalMemoryGB} GB (${totalMemoryMB} MB)`;
+						let strgsugs = document.getElementById("storagesuggs");
+						if (usedMemoryPercentage < 20) {
+							strgsugs.innerHTML = `<small><b>You have a lot of storage left!</b><p>You can import files in files app or install apps from store to use it!</p></small>`
+						}
+					});
+				}
+
+				generateDeviceDivs()
+
+
+				var psmm = window.parent.document.body.style.opacity == "1";
+				if (psmm) { togglepsm() }
+				function togglepsm() {
+					if (psmm) {
+						window.parent.document.body.style.filter = "brightness(1)"
+						psmm = false
+					} else {
+						window.parent.document.body.style.filter = "brightness(" + (100 - document.getElementById("dimlightsby").value) + "%)"
+
+						psmm = true;
+						document.getElementById("cbx-51").check()
+					}
+					console.log(psmm)
+				}
+
+			</script>
+	</container>
+</body>
+
+</html>
