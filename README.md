@@ -1,2 +1,2 @@
 # LikeF
-LikeF is a very minimal and basic PC (sort of) that runs on FlexOS
+LikeF is a first and very minimal and basic PC (sort of) that runs on FlexOS
